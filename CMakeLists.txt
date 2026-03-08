@@ -14,7 +14,15 @@ else()
 	add_compile_options(-mavx2 -mfma)#make sure SIMD optimizations take place, but
 endif()
 
+# Ensure Raylib is built as static libraries
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build Raylib as static libraries" FORCE)
+
 project(TerrariaClone)
+
+#add Raylib, and other lib if needed
+add_subdirectory(thirdparty/raylib-5.0)
+add_subdirectory(thirdparty/imgui-docking)
+add_subdirectory(thirdparty/rlimgui)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
@@ -60,4 +68,8 @@ elseif(APPLE OR UNIX) #macOS / Linux
 endif()
 
 #tell cmake to include all the headers files in src
-target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/gameLayer")
+target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/platform")
+
+#Link Raylib lib statically, and other if needed
+target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE raylib_static imgui rlimgui)
