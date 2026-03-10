@@ -15,17 +15,16 @@ int main(void)
 #endif
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-	InitWindow(800, 450, "raylib");
+	InitWindow(1200, 720, "raylib");
 	SetExitKey(KEY_NULL);
 	SetTargetFPS(240);
-	DrawFPS(10, 10);
 	
 #pragma region ImGui
 	rlImGuiSetup(true);
 
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io.FontGlobalScale = 2;
+	io.FontGlobalScale = 1.5f;
 	imguiThemes.SetCatppuccinMochaTheme();
 #pragma endregion
 
