@@ -1,9 +1,10 @@
-#include <raylib.h>
 #include "GameMain.h"
+#include <raylib.h>
 #include <asserts.h>
 #include <AssetManager.h>
 #include <GameMap.h>
 #include <Helpers.h>
+#include <raymath.h>
 
 struct GameData
 {
@@ -38,6 +39,8 @@ bool UpdateGame()
 	if (deltaTime > 1.f / 5) { deltaTime = 1 / 5.f; }
 
 	gameData.camera.offset = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
+
+
 #pragma region Camera Movement
 	if (IsKeyDown(KEY_LEFT)) gameData.camera.target.x -= 7.0f * deltaTime;
 	if (IsKeyDown(KEY_RIGHT)) gameData.camera.target.x += 7.0f * deltaTime;
@@ -48,7 +51,6 @@ bool UpdateGame()
 	Vector2 worldPos = GetScreenToWorld2D(GetMousePosition(), gameData.camera);
 	int blockX = (int)floor(worldPos.x);
 	int blockY = (int)floor(worldPos.y);
-
 	//break block
 	if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
 	{
@@ -66,10 +68,30 @@ bool UpdateGame()
 
 	BeginMode2D(gameData.camera);
 
-	ClearBackground({ 75, 75, 150, 255 });
-	for (int y = 0; y < gameData.gameMap.h; y++)
+#pragma region smallWorldRenderingOptimization
+	Vector2 topLeftView = GetScreenToWorld2D({ 0,0 }, gameData.camera);
+	Vector2 bottomRightView = GetScreenToWorld2D({ 
+		(float)GetScreenWidth(),
+		(float)GetScreenHeight()}, 
+		gameData.camera
+	);
+
+	int startXView = (int)floorf(topLeftView.x - 1);
+	int endXView = (int)ceilf(bottomRightView.x + 1);
+	int startYView = (int)floorf(topLeftView.y - 1);
+	int endYView = (int)ceilf(bottomRightView.y + 1);
+
+	startXView = Clamp(startXView, 0, gameData.gameMap.w - 1);
+	endXView = Clamp(endXView, 0, gameData.gameMap.w - 1);
+
+	startYView = Clamp(startYView, 0, gameData.gameMap.h - 1);
+	endYView = Clamp(endYView, 0, gameData.gameMap.h - 1);
+
+#pragma endregion
+
+	for (int y = startYView; y <= endYView; y++)
 	{
-		for (int x = 0; x < gameData.gameMap.w; x++)
+		for (int x = startXView; x <= endXView; x++)
 		{
 			auto& b = gameData.gameMap.getBlockUnsafe(x, y);
 			if (b.type != Blocks::air)

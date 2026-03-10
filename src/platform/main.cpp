@@ -7,22 +7,23 @@
 #include <ImGuiThemes.h> 
 #include <GameMain.h>
 
-int main()
+int main(void)
 {
 	ImGuiThemes imguiThemes;
 #if PRODUCTION_BUILD == 1
-	SetTraceLogLevel(LOG_NONE) // no log output to the console by raylib
+	SetTraceLogLevel(LOG_NONE); // no log output to the console by raylib
 #endif
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	InitWindow(800, 450, "raylib");
 	SetExitKey(KEY_NULL);
 	SetTargetFPS(240);
+	DrawFPS(10, 10);
 	
 #pragma region ImGui
 	rlImGuiSetup(true);
 
-	ImGuiIO& io = ImGui::GetIO();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.FontGlobalScale = 2;
 	imguiThemes.SetCatppuccinMochaTheme();
@@ -32,10 +33,10 @@ int main()
 	{
 		return 0;
 	}
-
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();
+		ClearBackground({ 75, 75, 150, 255 });
 #pragma region ImGui
 		rlImGuiBegin();
 
