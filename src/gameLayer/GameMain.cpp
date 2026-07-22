@@ -6,7 +6,7 @@
 #include <Helpers.h>
 #include <raymath.h>
 #include <WorldGenerator.h>
-#include <imgui.h>>
+#include <imgui.h>
 
 struct GameData
 {
